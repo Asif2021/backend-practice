@@ -21,4 +21,12 @@ app.use(express.static("public"))
 // we can set user browser's cookies and we should perform CRUD operation on user cookies
 app.use(cookieParser());
 
+
+//routes import 
+import userRouter from './routes/user.routes.js';
+
+
+// routes declaration
+app.use("/api/v1/users", userRouter)
+
 export {app}
