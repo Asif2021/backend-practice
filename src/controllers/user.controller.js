@@ -188,7 +188,7 @@ const changeCurrentPassword = asyncHandler(async(req, res)=>{
 
 
 const getCurrentUser = asyncHandler(async(req, res)=>{
-    return res.status(200).json(req.user, "Current User Fetched Successfully")
+     return res.status(200).json(new ApiResponse(200, req.user, "Current User Fetched Successfully"))
 })
 
 
@@ -211,6 +211,9 @@ const updateUserAvatar = asyncHandler(async(req, res)=>{
     if(!avatarLocalPath){
         throw new ApiError(400, "Avatar is required")
     }
+
+    // todo: Delete old avatar --- assignment ha.. 
+
        const avatar =  await uploadOnCloudinary(avatarLocalPath)
        if(!avatar.url){
         throw new ApiError(400, "Error while uploading avatar")
@@ -244,6 +247,7 @@ const updateUserCoverImage = asyncHandler(async(req, res)=>{
        return res.status(200).json(new ApiResponse(200, user, "Cover Image Updated Successfully"))
 })
 
+
 export {registerUser,
     loginUser,
     logoutUser,
@@ -252,6 +256,5 @@ export {registerUser,
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateUserCoverImage,
     updateUserCoverImage,
 }
