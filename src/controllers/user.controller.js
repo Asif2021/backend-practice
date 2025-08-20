@@ -257,11 +257,13 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
     // if username exist then find user
     const channel = await User.aggregate([
         {
+            // find user by username
             $match:{
                 username: username?.toLowerCase()
                     },
         },
         {
+            // combine user with channel subscribers
             $lookup: {
                 from: "subscriptions",
                 localField: "_id",
@@ -270,6 +272,7 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
             }
        },
        {
+        // combine user with subscribers
         $lookup:{
             from: "subscriptions",
             localField: "_id",
@@ -278,15 +281,16 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
         }
        },
        {
+        // add fields to the user object
         $addFields:{
             subscriberCount:{
                 $size:"$subscribers"
             },
-            
+        // count of channels subscribed to   
             channelSubscribedToCount:{
                     $size: "$subscribedTo"
             },
-
+        // check if user is subscribed to the channel
             isSubscribed:{
                 $cond:{
                     if: {$in: [req.user?._id, "$subscribers.subscriber"]},
@@ -296,6 +300,7 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
         }
        }},
        {
+        // reshape the user object with only required fields
         $project:{
             fullName: 1,
             username: 1,
@@ -308,8 +313,8 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
         }
        }
     ])
-
-    if(!channel?.length){
+    // if channel is not found then throw error
+    if(!channel || !channel.length){
         throw new ApiError(404, "Channel does not exist")
         }
     // if channel is found then return channel
