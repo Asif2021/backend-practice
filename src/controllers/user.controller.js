@@ -4,6 +4,7 @@ import {User} from '../models/user.model.js'
 import {uploadOnCloudinary} from '../utils/Cloudinay.js'
 import { ApiResponse } from '../utils/ApiResponse.js';
 import  jwt  from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 
 //Generate Access and Refresh Token so we can login user
@@ -314,7 +315,7 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
        }
     ])
     // if channel is not found then throw error
-    if(!channel || !channel.length){
+    if(!channel.length){
         throw new ApiError(404, "Channel does not exist")
         }
     // if channel is found then return channel
